@@ -3,3 +3,7 @@ echo "__pycache__/" >> .gitignore
 echo "*.pyc" >> .gitignore
 echo ".DS_Store" >> .gitignore
 echo "venv/" >> .gitignore
+*.csv
+*.parquet
+profile_results
+__pycache__/
