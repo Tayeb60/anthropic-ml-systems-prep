@@ -13,6 +13,8 @@ Processing large datasets (1 million+ rows) is a core task in ML systems. The ch
 
 ## Results
 
+### Benchmark 1: Pandas vs Polars (1M Rows)
+
 | Library | Processing Time | Notes |
 | :--- | :--- | :--- |
 | Pandas | 0.37s | Baseline. Uses C engine under the hood. |
@@ -20,14 +22,31 @@ Processing large datasets (1 million+ rows) is a core task in ML systems. The ch
 
 **Key Finding:** Polars outperforms Pandas by approximately 22% on this task. For a 100-million-row dataset, this translates to a time saving of roughly 8 seconds per run. At scale, this saves significant compute costs.
 
+### Benchmark 2: File Formats (10M Rows)
+
+| Format | Load Type | Time | Speedup |
+| :--- | :--- | :--- | :--- |
+| CSV | Full Load | 2.82s | Baseline |
+| Parquet | Full Load | 0.30s | **9.4x faster** |
+| Parquet | Partial Load (2 cols) | 0.14s | **20.1x faster** |
+
+**Key Finding:** Parquet is drastically faster than CSV at scale. The columnar format allows you to read only the columns you need, which is a massive advantage for ML training pipelines.
+
+### Profiling Results
+
+Using `cProfile`, I found that **93% of the execution time** was spent on `pd.read_csv()`. This proved that parallelizing the math (using `multiprocessing`) was counterproductive, because the data loading was the true bottleneck.
+
 ## How to Reproduce
 1. Clone this repo.
-2. Install dependencies: `pip install pandas polars`
+2. Install dependencies: `pip install pandas polars pyarrow`
 3. Generate the data: `python generate_data.py`
 4. Run the Pandas version: `python process_data.py`
 5. Run the Polars version: `python process_data_v2.py`
+6. Run the parquet test: `python convert_to_parquet.py`
+7. Run the large parquet test: `python parquet_column_test.py`
 
 ## Future Work
-- Implement multiprocessing to use all CPU cores.
+- Implement multiprocessing to use all CPU cores (for larger datasets where the math dominates).
 - Extend benchmarks to GPU-accelerated libraries (CuPy, PyTorch).
 - Build a distributed training pipeline using PyTorch DDP.
+- Benchmark Parquet with different compression algorithms (Snappy vs Gzip).
