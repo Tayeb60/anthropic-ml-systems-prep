@@ -50,3 +50,13 @@ Using `cProfile`, I found that **93% of the execution time** was spent on `pd.re
 - Extend benchmarks to GPU-accelerated libraries (CuPy, PyTorch).
 - Build a distributed training pipeline using PyTorch DDP.
 - Benchmark Parquet with different compression algorithms (Snappy vs Gzip).
+
+### Benchmark 3: Distributed Data Parallel (DDP) Training
+
+I implemented a minimal DDP training script in PyTorch to demonstrate how gradients are synchronized across multiple processes.
+
+- **What it does:** Simulates training a model across 2 GPUs (or CPUs).
+- **Key concepts:** Process groups, rendezvous, gradient averaging.
+- **Output:** Both ranks complete successfully with different data slices.
+
+This is the foundation for training large language models across clusters.
