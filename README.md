@@ -60,3 +60,12 @@ I implemented a minimal DDP training script in PyTorch to demonstrate how gradie
 - **Output:** Both ranks complete successfully with different data slices.
 
 This is the foundation for training large language models across clusters.
+
+### Benchmark 4: CPU vs GPU Training (M4)
+
+I benchmarked training a simple neural network on both the CPU and the M4 GPU (via MPS). 
+
+- **Small model (4M params, batch 256):** CPU was faster (1.25s vs 1.66s). The GPU was underutilized.
+- **Large model (32M params, batch 1024):** GPU was faster (11.55s vs 14.82s). The larger workload allowed the GPU to use its cores effectively.
+
+**Key Finding:** GPUs only outperform CPUs when the workload is large enough to saturate their cores. For small models, the CPU is often competitive.
